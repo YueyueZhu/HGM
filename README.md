@@ -8,7 +8,7 @@ a single GeForce RTX 3090 GPU of 24 GB Memory.
 
 1. Configuring your environment (Prerequisites):
    
-    Note that PraNet is only tested on Ubuntu OS with the following environments. 
+    Note that BiMamTrans is only tested on Ubuntu OS with the following environments. 
     It may work on other operating systems as well but we do not guarantee that it will.
     
     + Creating a virtual environment in terminal: `conda create -n BiMamTrans python=3.10`.
