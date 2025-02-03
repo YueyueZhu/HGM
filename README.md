@@ -24,7 +24,7 @@ a single GeForce RTX 3090 GPU of 24 GB Memory.
     which can be found in this [Google Drive Link (399.5MB)](https://drive.google.com/file/d/13Zij1HbKTn9PKTW9bM19_fXtfQKWdCtD/view?usp=sharing). It contains two sub-datasets: Kvasir-SEG (900 train samples) and CVC-ClinicDB (550 train samples).
     
     + downloading version 1 pretrained weights and move it into `./best_parameter_BiMamTrans.pth`, 
-    which can be found in this [Google Drive Link (101.3MB)](https://drive.google.com/file/d/1lJv8XVStsp3oNKZHaSr42tawdMOq6FLP/view?usp=sharing).
+    which can be found in this [Google Drive Link (101.3MB)](https://drive.google.com/file/d/13Zij1HbKTn9PKTW9bM19_fXtfQKWdCtD/view?usp=sharing).
     
     + downloading version 2 pretrained weights and move it into `./best_parameter_BiMamTransV2.pth`, 
     which can be found in this [Google Drive Link (102MB)](https://drive.google.com/file/d/17WAvw_hoXfPZsE7KlKOkFcu2jWuW7L5p/view?usp=sharing).
