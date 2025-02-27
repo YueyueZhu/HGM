@@ -408,8 +408,8 @@ class BiWindowMambaLayerV2(nn.Module):
         out = x_out + x
 
         return out
-
-class LM_Mamba_BibiGCN(nn.Module):
+    
+class HGMM(nn.Module):
     def __init__(self, depths=[1,1], 
                  dims=[64,64], **kwargs):
         super().__init__()
@@ -462,16 +462,24 @@ class LM_Mamba_BibiGCN(nn.Module):
         lastx_y_Mamba_T = self.w_mamba_layers_T[1].y_Mamba
 
         B, C, H, W = x.shape
-        adj_matrix = torch.ones(4, 4)
-        edge_index, edge_weight = dense_to_sparse(adj_matrix)
-        edge_index = edge_index.to(lastx_x_Mamba.device)
         node_features = torch.cat([lastx_x_Mamba, lastx_y_Mamba, lastx_x_Mamba_T, lastx_y_Mamba_T], dim=1)
         node_features = node_features.permute(0,2,1)
+
+        B1, M, F = node_features.shape
+        adj_matrix = np.zeros((M, M))
+        step = 32
+        adj_matrix[::step, ::step] = 1 
+        np.fill_diagonal(adj_matrix, 1)
+        edge_index, edge_weight = dense_to_sparse(torch.tensor(adj_matrix))
+        edge_index = edge_index.to(lastx_x_Mamba.device)
+
+
         gcn_x = self.GCN(node_features, edge_index)
         gcn_x = gcn_x.permute(0,2,1)
         gcn_x = gcn_x.reshape(B, C, H, W)
 
         return gcn_x + old + lastx + lastx_T.permute(0, 1, 3, 2)
+
 
 class GCN(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels):
@@ -486,7 +494,7 @@ class GCN(torch.nn.Module):
         x = self.conv2(x, edge_index)
         return x
 
-class Decoder(nn.Module):
+class BMD(nn.Module):
     def __init__(self):
         super().__init__()
         stages = []

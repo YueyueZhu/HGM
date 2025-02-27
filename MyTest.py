@@ -6,7 +6,7 @@ import os, argparse
 import imageio
 from utils.dataloader import test_dataset
 from utils.dataloader import test_dataset, EvalDataset
-from lib.pvt import BiMamTrans, BiMamTransV2
+from lib.pvt import HGM
 
 def validation(model, device, results_save_place, test_path):
     parser = argparse.ArgumentParser()
@@ -109,16 +109,16 @@ test_dataset_name = "CVC-300"
 
 
 parser = argparse.ArgumentParser()
-# best_parameter_BiMamTrans.pth & best_parameter_BiMamTransV2.pth
-parser.add_argument('--pth_path', type=str, default='./data/best_parameter_BiMamTrans.pth')
+# best_parameter_HGM.pth
+parser.add_argument('--pth_path', type=str, default='./data/best_parameter_HGM.pth')
 parser.add_argument('--test_path', type=str,
                         default='./data/TestDataset/' + test_dataset_name, help='path to train dataset')
-parser.add_argument('--results_save_place', type=str, default='./data/results/'+ test_dataset_name +'_BiMamTrans/')
+parser.add_argument('--results_save_place', type=str, default='./data/results/'+ test_dataset_name +'_HGM/')
 opt = parser.parse_args()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-model = BiMamTrans()
-# model = BiMamTransV2()
+
+model = HGM()
 
 weights_dict = torch.load(opt.pth_path, map_location=device)
 model_state_dict = model.state_dict()

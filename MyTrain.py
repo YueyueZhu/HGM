@@ -10,7 +10,7 @@ from utils.dataloader import test_dataset, EvalDataset
 import torch.nn.functional as F
 import imageio
 import numpy as np
-from lib.pvt import BiMamTrans, BiMamTransV2
+from lib.pvt import HGM
 
 def structure_loss(pred, mask):
     weit = 1 + 5*torch.abs(F.avg_pool2d(mask, kernel_size=31, stride=1, padding=15) - mask)
@@ -204,8 +204,8 @@ if __name__ == '__main__':
     parser.add_argument('--test_path', type=str,
                         default='./data/TestDataset/' + test_dataset_name, help='path to train dataset')
     # Preparameter 
-    # best_parameter_BiMamTrans.pth || best_parameter_BiMamTransV2.pth
-    parser.add_argument('--pre_parameter', type=str, default="./best_parameter_BiMamTrans.pth", help='Load model from a .pth file')
+    # best_parameter_HGM.pth
+    parser.add_argument('--pre_parameter', type=str, default="./best_parameter_HGM.pth", help='Load model from a .pth file')
     # Save Checkpoint
     parser.add_argument('--train_save', type=str,default='./data/test.pth')
     # Verification result save address
@@ -216,8 +216,7 @@ if __name__ == '__main__':
 
     # ---- build models ----
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BiMamTrans()
-    # model = BiMamTransV2()
+    model = HGM()
 
     if torch.cuda.device_count() > 1:
         print(f"Using {torch.cuda.device_count()} GPUs")

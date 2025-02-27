@@ -9,7 +9,7 @@ import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from lib.Decoder import LM_Mamba_BibiGCN, Decoder
+from lib.Decoder import HGMM, BMD
                   
 
 def conv3x3(in_planes, out_planes, stride=1):
@@ -487,9 +487,9 @@ def erosion_to_dilate(output):
         return torch.cat([maske, background, maskd], dim=1)
 
 
-class UAModule(nn.Module):
+class BDFM(nn.Module):
     def __init__(self, in_channels):
-        super(UAModule, self).__init__()
+        super(BDFM, self).__init__()
         self.relu = nn.ReLU()
         self.conv1x1_feature = BasicConv2d(in_channels, in_channels, 1)
         self.conv1x1_mid_feature_1 = BasicConv2d(in_channels, in_channels, 1)
@@ -646,9 +646,9 @@ class multiscale_feature_aggregation(nn.Module):
         x=self.c23(self.c22(x))
         return x
 
-class BiMamTrans(nn.Module):
+class HGM(nn.Module):
     def __init__(self, channel=32,depths=[1,1],device=None):
-        super(BiMamTrans, self).__init__()
+        super(HGM, self).__init__()
 
         self.backbone = pvt_v2_b2()  # [64, 128, 320, 512]
 
@@ -659,10 +659,12 @@ class BiMamTrans(nn.Module):
 
         self.CFM = CFM(channel)
 
-        self.LM_Mamba = LM_Mamba_BibiGCN(dims=[64,64],depths=depths,device=device)
-        self.decoder = Decoder()
-        self.LM_Mamba02 = LM_Mamba_BibiGCN(dims=[32,32],depths=depths,device=device)
-        self.UA = UAModule(in_channels=32)
+        self.hgmm = HGMM(dims=[64,64],depths=depths,device=device)
+        self.decoder = BMD()
+        self.hgmm02 = HGMM(dims=[32,32],depths=depths,device=device)
+        self.hgmm03 = HGMM(dims=[32,32],depths=depths,device=device)
+
+        self.bdfm = BDFM(in_channels=32)
         
         self.down05 = nn.Upsample(scale_factor=0.5, mode='bilinear', align_corners=True)
         self.out_CFM = nn.Conv2d(channel, 1, 1)
@@ -677,64 +679,7 @@ class BiMamTrans(nn.Module):
         x4 = pvt[3]
         
         # CIM
-        lm_feature = self.LM_Mamba(x1)
-
-        # CFM
-        x2_t = self.Translayer2_1(x2)  
-        x3_t = self.Translayer3_1(x3)  
-        x4_t = self.Translayer4_1(x4)  
-        cfm_feature = self.CFM(x4_t, x3_t, x2_t)
-
-        # UALM
-        lm_middle_output = self.Translayer2_0(lm_feature)
-        lm_middle_output = self.down05(lm_middle_output)
-        mid_feature = self.out_CFM(cfm_feature)#torch.Size([8, 1, 32, 32])
-        UA_feature = self.UA(lm_middle_output,mid_feature) + lm_middle_output
-        cfm_feature = self.LM_Mamba02(cfm_feature)
-
-        #decoder
-        x12 = []
-        x12.append(x1)
-        x12.append(x2)
-        prediction = cfm_feature + UA_feature
-        prediction = self.decoder(x12,prediction)
-        
-        return prediction
-
-class BiMamTransV2(nn.Module):
-    def __init__(self, channel=32,depths=[1,1],device=None):
-        super(BiMamTransV2, self).__init__()
-
-        self.backbone = pvt_v2_b2()  # [64, 128, 320, 512]
-
-        self.Translayer2_0 = BasicConv2d(64, channel, 1)
-        self.Translayer2_1 = BasicConv2d(128, channel, 1)
-        self.Translayer3_1 = BasicConv2d(320, channel, 1)
-        self.Translayer4_1 = BasicConv2d(512, channel, 1)
-
-        self.CFM = CFM(channel)
-
-        self.LM_Mamba = LM_Mamba_BibiGCN(dims=[64,64],depths=depths,device=device)
-        self.decoder = Decoder()
-        self.LM_Mamba02 = LM_Mamba_BibiGCN(dims=[32,32],depths=depths,device=device)
-        self.LM_Mamba03 = LM_Mamba_BibiGCN(dims=[32,32],depths=depths,device=device)
-
-        self.UA = UAModule(in_channels=32)
-        
-        self.down05 = nn.Upsample(scale_factor=0.5, mode='bilinear', align_corners=True)
-        self.out_CFM = nn.Conv2d(channel, 1, 1)
-
-    def forward(self, x):
-
-        # backbone
-        pvt = self.backbone(x)
-        x1 = pvt[0]
-        x2 = pvt[1]
-        x3 = pvt[2]
-        x4 = pvt[3]
-        
-        # CIM
-        lm_feature = self.LM_Mamba(x1)
+        lm_feature = self.hgmm(x1)
 
         # CFM
         x2_t = self.Translayer2_1(x2)  
@@ -746,10 +691,10 @@ class BiMamTransV2(nn.Module):
         lm_middle_output = self.Translayer2_0(lm_feature)
         lm_middle_output = self.down05(lm_middle_output)
         mid_feature = self.out_CFM(cfm_feature)
-        UA_feature = self.UA(lm_middle_output,mid_feature) + lm_middle_output
-        UA_feature = self.LM_Mamba02(UA_feature)
+        UA_feature = self.bdfm(lm_middle_output,mid_feature) + lm_middle_output
+        UA_feature = self.hgmm02(UA_feature)
 
-        cfm_feature = self.LM_Mamba03(cfm_feature)
+        cfm_feature = self.hgmm03(cfm_feature)
 
         x12 = []
         x12.append(x1)
@@ -763,7 +708,7 @@ class BiMamTransV2(nn.Module):
 if __name__ == '__main__':
     os.environ["CUDA_VISIBLE_DEVICES"] = "1"
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BiMamTrans()
+    model = HGM()
     opttrainsize = 352
     input_tensor = torch.randn(1, 3, opttrainsize, opttrainsize).to(device)
     model.to(device=device)

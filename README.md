@@ -1,14 +1,16 @@
+# Hybrid Graph Mamba: Unlocking Non-Euclidean Potential for Accurate Polyp Segmentation
+
 ## Training/Testing
 
 The training and testing experiments are conducted using [PyTorch](https://github.com/pytorch/pytorch) with 
-a single GeForce RTX 3090 GPU of 24 GB Memory.
+two GeForce RTX 3090 GPUs of 24 GB Memory.
 
 > Note that our model also supports low memory GPU, which means you can lower the batch size
 
 
 1. Configuring your environment (Prerequisites):
    
-    Note that BiMamTrans is only tested on Ubuntu OS with the following environments. 
+    Note that HGM is only tested on Ubuntu OS with the following environments. 
     It may work on other operating systems as well but we do not guarantee that it will.
     
     + Creating a virtual environment in terminal: `conda create -n BiMamTrans python=3.10`.
@@ -23,12 +25,9 @@ a single GeForce RTX 3090 GPU of 24 GB Memory.
     + downloading training dataset and move it into `./data/TrainDataset/`, 
     which can be found in this [Google Drive Link (399.5MB)](https://drive.google.com/file/d/13Zij1HbKTn9PKTW9bM19_fXtfQKWdCtD/view?usp=sharing). It contains two sub-datasets: Kvasir-SEG (900 train samples) and CVC-ClinicDB (550 train samples).
     
-    + downloading version 1 pretrained weights and move it into `./best_parameter_BiMamTrans.pth`, 
-    which can be found in this [Google Drive Link (101.3MB)](https://drive.google.com/file/d/13Zij1HbKTn9PKTW9bM19_fXtfQKWdCtD/view?usp=sharing).
+    + downloading pretrained weights and move it into `./best_parameter_HGM.pth`, 
+    which can be found in this [Google Drive Link (101.9MB)](https://drive.google.com/file/d/137eXPBS88xvFcvRqs-GQMNSnBjOBuA7O/view?usp=drive_link).
     
-    + downloading version 2 pretrained weights and move it into `./best_parameter_BiMamTransV2.pth`, 
-    which can be found in this [Google Drive Link (102MB)](https://drive.google.com/file/d/17WAvw_hoXfPZsE7KlKOkFcu2jWuW7L5p/view?usp=sharing).
-
 3. Training Configuration:
 
     + Assigning your costumed path, like `--train_save`, `--train_path`, `--train_save`, and `--results_save_place` in `MyTrain.py`.
