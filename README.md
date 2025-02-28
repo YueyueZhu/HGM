@@ -25,8 +25,7 @@ two GeForce RTX 3090 GPUs of 24 GB Memory.
     + downloading training dataset and move it into `./data/TrainDataset/`, 
     which can be found in this [Google Drive Link (399.5MB)](https://drive.google.com/file/d/13Zij1HbKTn9PKTW9bM19_fXtfQKWdCtD/view?usp=sharing). It contains two sub-datasets: Kvasir-SEG (900 train samples) and CVC-ClinicDB (550 train samples).
     
-    + downloading pretrained weights and move it into `./best_parameter_HGM.pth`, 
-    which can be found in this [Google Drive Link (101.9MB)](https://drive.google.com/file/d/137eXPBS88xvFcvRqs-GQMNSnBjOBuA7O/view?usp=drive_link).
+    
     
 3. Training Configuration:
 
