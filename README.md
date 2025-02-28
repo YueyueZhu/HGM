@@ -13,7 +13,7 @@ two GeForce RTX 3090 GPUs of 24 GB Memory.
     Note that HGM is only tested on Ubuntu OS with the following environments. 
     It may work on other operating systems as well but we do not guarantee that it will.
     
-    + Creating a virtual environment in terminal: `conda create -n BiMamTrans python=3.10`.
+    + Creating a virtual environment in terminal: `conda create -n HGM python=3.10`.
     
     + Installing necessary packages: `pip install -r requirements.txt `.
     
