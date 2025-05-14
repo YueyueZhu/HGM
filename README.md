@@ -2,6 +2,11 @@
 
 ## Early Accept By MICCAI 2025
 
+- HGM
+    <p align="center">
+        <img src="imgs/model.png"/> <br />
+    </p>
+    
 ## Training/Testing
 
 The training and testing experiments are conducted using [PyTorch](https://github.com/pytorch/pytorch) with 
