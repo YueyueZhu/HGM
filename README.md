@@ -1,5 +1,7 @@
 # Hybrid Graph Mamba: Unlocking Non-Euclidean Potential for Accurate Polyp Segmentation
 
+## Early Accept By MICCAI 2025
+
 ## Training/Testing
 
 The training and testing experiments are conducted using [PyTorch](https://github.com/pytorch/pytorch) with 
@@ -24,8 +26,9 @@ two GeForce RTX 3090 GPUs of 24 GB Memory.
     
     + downloading training dataset and move it into `./data/TrainDataset/`, 
     which can be found in this [Google Drive Link (399.5MB)](https://drive.google.com/file/d/13Zij1HbKTn9PKTW9bM19_fXtfQKWdCtD/view?usp=sharing). It contains two sub-datasets: Kvasir-SEG (900 train samples) and CVC-ClinicDB (550 train samples).
-    
-    
+
+    + downloading pretrained weights and move it into `./best_parameter_HGM.pth`, 
+    which can be found in this [Google Drive Link (101.9MB)](https://drive.google.com/file/d/17JhP6Qd4IexlneXdKwUlB9t_426uk_LF/view?usp=sharing).
     
 3. Training Configuration:
 
