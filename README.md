@@ -1,6 +1,6 @@
 # Hybrid Graph Mamba: Unlocking Non-Euclidean Potential for Accurate Polyp Segmentation
 
-## Early Accept By MICCAI 2025
+## Early Accepted By MICCAI 2025
 
 - HGM
     <p align="center">
